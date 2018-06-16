@@ -13,63 +13,76 @@ env:
 
 matrix:
     include:
+        # Test our minimum GCC version, which is gcc 5.4 on Ubuntu Trusty
         - os: linux
-          addons: &valgrind
+          addons:
             apt:
-              packages: valgrind
+              sources: ubuntu-toolchain-r-test
+              packages:
+                - valgrind
+                - gcc-5
+                - g++-5
           compiler: gcc
-          env: BUILD_CONFIGURATION=0 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
+          env: CC=gcc-5 CXX=g++-5 BUILD_CONFIGURATION=0 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
+        # Test our minium Clang version, which is clang 3.4 on Ubuntu Trusty
         - os: linux
-          addons: *valgrind
-          compiler: gcc
-          env: BUILD_CONFIGURATION=1 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
+          addons:
+            apt:
+              packages:
+                - valgrind
+                - clang
+          compiler: clang
+          env: BUILD_CONFIGURATION=0 WITH_COVERAGE=1 BUIlD_DIR="/tmp/cppmicroservices_builds"
+        # Test one build configuration with the latest available Clang
         - os: linux
-          addons: *valgrind
-          compiler: gcc
-          env: BUILD_CONFIGURATION=2 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
+          addons:
+            apt:
+              sources:
+                - llvm-toolchain-trusty-6.0
+          env: CC=clang-6.0 CXX=clang++-6.0 BUILD_CONFIGURATION=0 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
+        # Test all build configuration with the latest available GCC
         - os: linux
-          addons: *valgrind
-          compiler: gcc
-          env: BUILD_CONFIGURATION=3 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
-        # Run a build on Ubuntu 12.04 with gcc 4.6, using a shared multi-threaded configuration.
+          addons: &gcc8-valgrind
+            apt:
+              sources: ubuntu-toolchain-r-test
+              packages:
+                - valgrind
+                - gcc-8
+                - g++-8
+          env: CC=gcc-8 CXX=g++-8 BUILD_CONFIGURATION=0 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
         - os: linux
-          dist: precise
-          sudo: required
-          addons: *valgrind
-          compiler: gcc
-          env: BUILD_CONFIGURATION=0 BUILD_DIR="/tmp/cppmicroservices_builds_precise"
+          addons: *gcc8-valgrind
+          env: CC=gcc-8 CXX=g++-8 BUILD_CONFIGURATION=1 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
+        - os: linux
+          addons: *gcc8-valgrind
+          env: CC=gcc-8 CXX=g++-8 BUILD_CONFIGURATION=2 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
+        - os: linux
+          addons: *gcc8-valgrind
+          env: CC=gcc-8 CXX=g++-8 BUILD_CONFIGURATION=3 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
         # minimum supported compiler on OS X
         - os: osx
-          osx_image: xcode6.4
+          osx_image: xcode7.3
           compiler: clang
-          env: BUILD_CONFIGURATION=0 MACOSX_DEPLOYMENT_TARGET=10.10
+          env: BUILD_CONFIGURATION=0 MACOSX_DEPLOYMENT_TARGET=10.11
         - os: osx
-          osx_image: xcode6.4
+          osx_image: xcode7.3
           compiler: clang
-          env: BUILD_CONFIGURATION=1 MACOSX_DEPLOYMENT_TARGET=10.10
-        #- os: osx
-        #  osx_image: xcode6.4
-        #  compiler: clang
-        #  env: BUILD_CONFIGURATION=2 MACOSX_DEPLOYMENT_TARGET=10.10
-        #- os: osx
-        #  osx_image: xcode6.4
-        #  compiler: clang
-        #  env: BUILD_CONFIGURATION=3 MACOSX_DEPLOYMENT_TARGET=10.10
+          env: BUILD_CONFIGURATION=1 MACOSX_DEPLOYMENT_TARGET=10.11
         # latest compiler on OS X
         - os: osx
-          osx_image: xcode9.3
+          osx_image: xcode9.4
           compiler: clang
           env: BUILD_CONFIGURATION=0 MACOSX_DEPLOYMENT_TARGET=10.13 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
         - os: osx
-          osx_image: xcode9.3
+          osx_image: xcode9.4
           compiler: clang
           env: BUILD_CONFIGURATION=1 MACOSX_DEPLOYMENT_TARGET=10.13 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
         - os: osx
-          osx_image: xcode9.3
+          osx_image: xcode9.4
           compiler: clang
           env: BUILD_CONFIGURATION=2 MACOSX_DEPLOYMENT_TARGET=10.13 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
         - os: osx
-          osx_image: xcode9.3
+          osx_image: xcode9.4
           compiler: clang
           env: BUILD_CONFIGURATION=3 MACOSX_DEPLOYMENT_TARGET=10.13 WITH_COVERAGE=1 BUILD_DIR="/tmp/cppmicroservices_builds"
 
