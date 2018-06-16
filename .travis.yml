@@ -23,7 +23,8 @@ matrix:
                 - gcc-5
                 - g++-5
           compiler: gcc
-          env: MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && BUILD_CONFIGURATION=0 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          env:
+            - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && BUILD_CONFIGURATION=0 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
         # Test our minium Clang version, which is clang 3.4 on Ubuntu Trusty
         - os: linux
           addons:
@@ -32,14 +33,17 @@ matrix:
                 - valgrind
                 - clang
           compiler: clang
-          env: MATRIX_EVAL="BUILD_CONFIGURATION=0 && WITH_COVERAGE=1 && BUIlD_DIR=/tmp/cppmicroservices_builds"
+          env:
+            - MATRIX_EVAL="BUILD_CONFIGURATION=0 && WITH_COVERAGE=1 && BUIlD_DIR=/tmp/cppmicroservices_builds"
         # Test one build configuration with the latest available Clang
         - os: linux
           addons:
             apt:
               sources:
                 - llvm-toolchain-trusty-6.0
-          env: MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0 && BUILD_CONFIGURATION=0 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          compiler: clang
+          env:
+            - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0 && BUILD_CONFIGURATION=0 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
         # Test all build configuration with the latest available GCC
         - os: linux
           addons: &gcc8-valgrind
@@ -49,42 +53,56 @@ matrix:
                 - valgrind
                 - gcc-8
                 - g++-8
-          env: MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && BUILD_CONFIGURATION=0 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          compiler: gcc
+          env:
+            - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && BUILD_CONFIGURATION=0 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
         - os: linux
           addons: *gcc8-valgrind
-          env: MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && BUILD_CONFIGURATION=1 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          env:
+            - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && BUILD_CONFIGURATION=1 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          compiler: gcc
         - os: linux
           addons: *gcc8-valgrind
-          env: MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && BUILD_CONFIGURATION=2 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          compiler: gcc
+          env:
+            - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && BUILD_CONFIGURATION=2 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
         - os: linux
           addons: *gcc8-valgrind
-          env: MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && BUILD_CONFIGURATION=3 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          compiler: gcc
+          env:
+            - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8 && BUILD_CONFIGURATION=3 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
         # minimum supported compiler on OS X
         - os: osx
           osx_image: xcode7.3
           compiler: clang
-          env: MATRIX_EVAL="BUILD_CONFIGURATION=0 && MACOSX_DEPLOYMENT_TARGET=10.11"
+          env:
+            - MATRIX_EVAL="BUILD_CONFIGURATION=0 && MACOSX_DEPLOYMENT_TARGET=10.11"
         - os: osx
           osx_image: xcode7.3
           compiler: clang
-          env: MATRIX_EVAL="BUILD_CONFIGURATION=1 && MACOSX_DEPLOYMENT_TARGET=10.11"
+          env:
+            - MATRIX_EVAL="BUILD_CONFIGURATION=1 && MACOSX_DEPLOYMENT_TARGET=10.11"
         # latest compiler on OS X
         - os: osx
           osx_image: xcode9.4
           compiler: clang
-          env: MATRIX_EVAL="BUILD_CONFIGURATION=0 && MACOSX_DEPLOYMENT_TARGET=10.13 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          env:
+            - MATRIX_EVAL="BUILD_CONFIGURATION=0 && MACOSX_DEPLOYMENT_TARGET=10.13 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
         - os: osx
           osx_image: xcode9.4
           compiler: clang
-          env: MATRIX_EVAL="BUILD_CONFIGURATION=1 && MACOSX_DEPLOYMENT_TARGET=10.13 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          env:
+            - MATRIX_EVAL="BUILD_CONFIGURATION=1 && MACOSX_DEPLOYMENT_TARGET=10.13 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
         - os: osx
           osx_image: xcode9.4
           compiler: clang
-          env: MATRIX_EVAL="BUILD_CONFIGURATION=2 && MACOSX_DEPLOYMENT_TARGET=10.13 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          env:
+            - MATRIX_EVAL="BUILD_CONFIGURATION=2 && MACOSX_DEPLOYMENT_TARGET=10.13 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
         - os: osx
           osx_image: xcode9.4
           compiler: clang
-          env: MATRIX_EVAL="BUILD_CONFIGURATION=3 && MACOSX_DEPLOYMENT_TARGET=10.13 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
+          env:
+            - MATRIX_EVAL="BUILD_CONFIGURATION=3 && MACOSX_DEPLOYMENT_TARGET=10.13 && WITH_COVERAGE=1 && BUILD_DIR=/tmp/cppmicroservices_builds"
 
 cache:
   directories:
