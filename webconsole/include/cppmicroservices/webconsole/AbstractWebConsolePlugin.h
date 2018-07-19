@@ -51,14 +51,18 @@ struct AbstractWebConsolePluginPrivate;
 
 
 /**
- * The Web Console can be extended by registering an OSGi service for the interface
+ * The Web Console can be extended by registering an OSGi service for the
+ * interface
  * HttpServlet with the service property
- * <code>org.cppmicroservices.webconsole.label</code> set to the label (last segment in the URL)
- * of the page. The respective service is called a Web Console Plugin or a plugin
+ * <code>org.cppmicroservices.webconsole.label</code> set to the label (last
+ * segment in the URL)
+ * of the page. The respective service is called a Web Console Plugin or a
+ * plugin
  * for short.
  *
  * To help rendering the response the Web Console bundle provides two
- * options. One of the options is to extend the AbstractWebConsolePlugin overwriting
+ * options. One of the options is to extend the AbstractWebConsolePlugin
+ * overwriting
  * the RenderContent(HttpServletRequest&, HttpServletResponse&) method.
  */
 class US_WebConsole_EXPORT AbstractWebConsolePlugin : public HttpServlet
@@ -110,7 +114,8 @@ protected:
    * footer.
    *
    * @param request the original request passed from the HTTP server
-   * @return <code>true</code> if the page should have headers and footers rendered
+   * @return <code>true</code> if the page should have headers and footers
+   * rendered
    */
   virtual bool IsHtmlRequest(HttpServletRequest& request);
 
@@ -143,7 +148,8 @@ protected:
   virtual void DoGet(HttpServletRequest& request, HttpServletResponse& response);
 
   /**
-   * This method is used to render the content of the plug-in. It is called internally
+   * This method is used to render the content of the plug-in. It is called
+   * internally
    * from the Web Console.
    *
    * @param request the HTTP request send from the user
@@ -162,7 +168,8 @@ protected:
   std::ostream& StartResponse(HttpServletRequest& request, HttpServletResponse& response);
 
   /**
-   * This method is called to generate the top level links with the available plug-ins.
+   * This method is called to generate the top level links with the available
+   * plug-ins.
    *
    * @param request the HTTP request coming from the user
    * @param writer the writer, where the HTML data is rendered
@@ -218,7 +225,8 @@ private:
    * @param response The response object
    * @return <code>true</code> if the request causes a resource to be sent back.
    *
-   * @throws std::exception If an error occurs accessing or spooling the resource.
+   * @throws std::exception If an error occurs accessing or spooling the
+   * resource.
    */
   bool SpoolResource(HttpServletRequest& request, HttpServletResponse& response) const;
 

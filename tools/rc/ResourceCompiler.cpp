@@ -39,7 +39,8 @@
 #include "optionparser.h"
 
 // ---------------------------------------------------------------------------------
-// --------------------------    PLATFORM SPECIFIC CODE    -------------------------
+// --------------------------    PLATFORM SPECIFIC CODE
+// -------------------------
 // ---------------------------------------------------------------------------------
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -114,7 +115,8 @@ std::string us_tempfile()
 #endif
 
 // ---------------------------------------------------------------------------------
-// ------------------------   END PLATFORM SPECIFIC CODE    ------------------------
+// ------------------------   END PLATFORM SPECIFIC CODE
+// ------------------------
 // ---------------------------------------------------------------------------------
 
 namespace 
@@ -129,9 +131,11 @@ public:
 
 /*
  * @brief parses json content and returns the parsed json or throws.
- * @tparam jsonContent json content to parse. The type must be convertible to std::istream.
+ * @tparam jsonContent json content to parse. The type must be convertible to
+ * std::istream.
  * @param root The parsed Json root object.
- * @throw InvalidManifest if the json is invalid. Parse error information is in the exception.
+ * @throw InvalidManifest if the json is invalid. Parse error information is in
+ * the exception.
  * If an exception is thrown, the root param is invalid.
  */
 template <class T>
@@ -152,7 +156,8 @@ void parseAndValidateJson(T& jsonContent, Json::Value& root)
  * @brief parses json content from a file and returns the parsed json or throws.
  * @param jsonFile path to a json file.
  * @param root The parsed Json root object.
- * @throw InvalidManifest if the json is invalid. Parse error information is in the exception.
+ * @throw InvalidManifest if the json is invalid. Parse error information is in
+ * the exception.
  * If an exception is thrown, the root param is invalid.
  */
 void parseAndValidateJsonFromFile(const std::string& jsonFile, Json::Value& root)
@@ -174,11 +179,13 @@ void parseAndValidateJsonFromFile(const std::string& jsonFile, Json::Value& root
 }
 
 /*
- * @brief extracts a manifest file from the zip archive and checks for correct JSON syntax.
+ * @brief extracts a manifest file from the zip archive and checks for correct
+ * JSON syntax.
  * @param zipArchive miniz data structure representing the opened zip archive.
  * @param archiveFileName file path of the zip archive.
  * @param archiveEntry archive entry path of the manifest file.
- * @throw InvalidManifest if the json is invalid. Parse error information is in the exception.
+ * @throw InvalidManifest if the json is invalid. Parse error information is in
+ * the exception.
  * @throw runtime_error if the manifest file could not be read from the archive.
  */
 void validateManifestInArchive(mz_zip_archive* zipArchive, const std::string& archiveFile, const std::string& archiveEntry)
@@ -205,11 +212,12 @@ void validateManifestInArchive(mz_zip_archive* zipArchive, const std::string& ar
   }
 }
 
-/* 
+/*
  * @brief Validate manifest files in an archive.
  * @param archiveFile archive file path
  * @throw std::InvalidManifest on the first invalid manifest found.
- * @throw runtime_error on the first manifest file which could not be read from the archive.
+ * @throw runtime_error on the first manifest file which could not be read from
+ * the archive.
  */
 void validateManifestsInArchive(const std::string& archiveFile)
 {
@@ -253,8 +261,10 @@ void validateManifestsInArchive(const std::string& archiveFile)
  * @brief concatenates all manifests checking for invalid syntax and
  * duplicate JSON key names.
  * @param manifests a map containing manifest file paths and their content.
- * @pre-condition each manifest in manifests has already been validated by jsoncpp.
- * @throw InvalidManifest if the manifest has inavlid syntax or duplicate key names
+ * @pre-condition each manifest in manifests has already been validated by
+ * jsoncpp.
+ * @throw InvalidManifest if the manifest has inavlid syntax or duplicate key
+ * names
  * @return valid JSON content
  */
 Json::Value AggregateManifestsAndValidate(std::unordered_map<std::string, Json::Value>& manifests)
@@ -284,8 +294,10 @@ Json::Value AggregateManifestsAndValidate(std::unordered_map<std::string, Json::
 
   std::clog << "concatenated (pre-validated) json:\n" << root.toStyledString() << std::endl;
 
-  // Any duplicate keys would have been flagged earlier while concatenating all the manifest files.
-  // This is a final JSON validation which should only find JSON syntax errors caused by an error in
+  // Any duplicate keys would have been flagged earlier while concatenating all
+  // the manifest files.
+  // This is a final JSON validation which should only find JSON syntax errors
+  // caused by an error in
   // concatenation.
   Json::Value manifestJson;
   std::istringstream json(root.toStyledString());
@@ -416,7 +428,8 @@ void ZipArchive::AddResourceFile(const std::string& resFileName,
 {
   std::string archiveName = resFileName;
 
-  // This check exists solely to maintain a deprecated way of adding manifest.json
+  // This check exists solely to maintain a deprecated way of adding
+  // manifest.json
   // through the --res-add option.
   if (isManifest || resFileName == std::string("manifest.json"))
   {
@@ -682,31 +695,36 @@ static int checkSanity(option::Parser& parse,
     return_code = EXIT_FAILURE;
   }
 
-  // If either --manifest-add or --res-add is given, --bundle-name must also be given.
-  if ((options[MANIFESTADD] || options[RESADD]) && !options[BUNDLENAME])
-  {
-    std::cerr << "If either --manifest-add or --res-add is provided, --bundle-name must be provided." << std::endl;
+  // If either --manifest-add or --res-add is given, --bundle-name must also be
+  // given.
+  if ((options[MANIFESTADD] || options[RESADD]) && !options[BUNDLENAME]) {
+    std::cerr << "If either --manifest-add or --res-add is provided, "
+                 "--bundle-name must be provided."
+              << std::endl;
     return_code = EXIT_FAILURE;
   }
 
-  // Generate a warning that --bundle-name is not necessary in following invocation.
-  if (options[BUNDLENAME] && !options[MANIFESTADD] && !options[RESADD] && return_code != EXIT_FAILURE)
-  {
-    std::clog << "Warning: --bundle-name option is unnecessary here." << std::endl;
+  // Generate a warning that --bundle-name is not necessary in following
+  // invocation.
+  if (options[BUNDLENAME] && !options[MANIFESTADD] && !options[RESADD] &&
+      return_code != EXIT_FAILURE) {
+    std::clog << "Warning: --bundle-name option is unnecessary here."
+              << std::endl;
   }
 
   return return_code;
 }
 
 // ---------------------------------------------------------------------------------
-// -----------------------------    MAIN ENTRY POINT    ----------------------------
+// -----------------------------    MAIN ENTRY POINT
+// ----------------------------
 // ---------------------------------------------------------------------------------
 
 int main(int argc, char** argv)
 {
   const int BUNDLE_MANIFEST_VALIDATION_ERROR_CODE(2);
 
-  int compressionLevel = MZ_DEFAULT_LEVEL; //default compression level;
+  int compressionLevel = MZ_DEFAULT_LEVEL; // default compression level;
   int return_code = EXIT_SUCCESS;
   std::string bundleName;
 
@@ -793,7 +811,8 @@ int main(int argc, char** argv)
           }
         }
 
-        // concatenate all manifest files into one, validate it and add it to the zip archive.
+        // concatenate all manifest files into one, validate it and add it to
+        // the zip archive.
         zipArchive->AddManifestFile(AggregateManifestsAndValidate(manifests));
       }
       // Add resource files to the zip archive
@@ -821,8 +840,10 @@ int main(int argc, char** argv)
         std::clog << "Appending file " << bundleBinaryFile << " with contents of resources zip file at " << zipFile << std::endl;
         std::clog << "  Initial file size : " << outFileStream.tellp() << std::endl;
         outFileStream << zipFileStream.rdbuf();
-        std::clog << "  Final file size : " << outFileStream.tellp() << std::endl;
-        // Depending on the ofstream destructor to close the file may result in a silent
+        std::clog << "  Final file size : " << outFileStream.tellp()
+                  << std::endl;
+        // Depending on the ofstream destructor to close the file may result in
+        // a silent
         // file write error. Hence the explicit call to close.
         outFileStream.close();
         if (outFileStream.rdstate() & std::ofstream::failbit)

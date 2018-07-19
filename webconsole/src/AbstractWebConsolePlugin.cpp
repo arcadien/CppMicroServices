@@ -79,12 +79,12 @@ void AbstractWebConsolePlugin::DoGet(HttpServletRequest& request, HttpServletRes
       std::ostream& os = StartResponse(request, response);
 
       // render top navigation
-      //RenderTopNavigation(request, os);
+      // RenderTopNavigation(request, os);
 
       // wrap content in a separate div
-      //pw.println( "<div id='content'>" );
+      // pw.println( "<div id='content'>" );
       RenderContent(request, response);
-      //pw.println( "</div>" );
+      // pw.println( "</div>" );
 
       // close the main div, body, and html
       EndResponse(request, os);
@@ -151,9 +151,11 @@ std::ostream& AbstractWebConsolePlugin::StartResponse(HttpServletRequest& reques
     //    r.put("brand.name", brandingPlugin.getBrandName());
     //    r.put("brand.product.url", brandingPlugin.getProductURL());
     //    r.put("brand.product.name", brandingPlugin.getProductName());
-    //    r.put("brand.product.img", toUrl( brandingPlugin.getProductImage(), appRoot ));
+    //    r.put("brand.product.img", toUrl( brandingPlugin.getProductImage(),
+    //    appRoot ));
     //    r.put("brand.favicon", toUrl( brandingPlugin.getFavIcon(), appRoot ));
-    //    r.put("brand.css", toUrl( brandingPlugin.getMainStyleSheet(), appRoot ));
+    //    r.put("brand.css", toUrl( brandingPlugin.getMainStyleSheet(), appRoot
+    //    ));
     data["brand"] = std::move(brand);
   }
   os << GetHeader();
@@ -163,53 +165,57 @@ std::ostream& AbstractWebConsolePlugin::StartResponse(HttpServletRequest& reques
 
 void AbstractWebConsolePlugin::RenderTopNavigation(HttpServletRequest& /*request*/, std::ostream& /*writer*/)
 {
-//  // assume pathInfo to not be null, else this would not be called
-//  std::string current = request.GetPathInfo();
-//  std::size_t slash = current.find_first_of('/', 1);
-//  current = current.substr(1, slash != std::string::npos ? slash-1 : slash);
+  //  // assume pathInfo to not be null, else this would not be called
+  //  std::string current = request.GetPathInfo();
+  //  std::size_t slash = current.find_first_of('/', 1);
+  //  current = current.substr(1, slash != std::string::npos ? slash-1 : slash);
 
-//  std::string appRoot = request.GetAttribute(WebConsoleConstants::ATTR_APP_ROOT).ToString();
+  //  std::string appRoot =
+  //  request.GetAttribute(WebConsoleConstants::ATTR_APP_ROOT).ToString();
 
-//  Map menuMap = ( Map ) request.getAttribute( OsgiManager.ATTR_LABEL_MAP_CATEGORIZED );
-//  this.renderMenu( menuMap, appRoot, pw );
+  //  Map menuMap = ( Map ) request.getAttribute(
+  //  OsgiManager.ATTR_LABEL_MAP_CATEGORIZED );
+  //  this.renderMenu( menuMap, appRoot, pw );
 
-//  // render lang-box
-//  Map langMap = (Map) request.getAttribute(WebConsoleConstants.ATTR_LANG_MAP);
-//  if (null != langMap && !langMap.isEmpty())
-//  {
-//    // determine the currently selected locale from the request and fail-back
-//    // to the default locale if not set
-//    // if locale is missing in locale map, the default 'en' locale is used
-//    Locale reqLocale = request.getLocale();
-//    String locale = null != reqLocale ? reqLocale.getLanguage()
-//                                      : Locale.getDefault().getLanguage();
-//    if (!langMap.containsKey(locale))
-//    {
-//      locale = Locale.getDefault().getLanguage();
-//    }
-//    if (!langMap.containsKey(locale))
-//    {
-//      locale = "en"; //$NON-NLS-1$
-//    }
+  //  // render lang-box
+  //  Map langMap = (Map)
+  //  request.getAttribute(WebConsoleConstants.ATTR_LANG_MAP);
+  //  if (null != langMap && !langMap.isEmpty())
+  //  {
+  //    // determine the currently selected locale from the request and
+  //    fail-back
+  //    // to the default locale if not set
+  //    // if locale is missing in locale map, the default 'en' locale is used
+  //    Locale reqLocale = request.getLocale();
+  //    String locale = null != reqLocale ? reqLocale.getLanguage()
+  //                                      : Locale.getDefault().getLanguage();
+  //    if (!langMap.containsKey(locale))
+  //    {
+  //      locale = Locale.getDefault().getLanguage();
+  //    }
+  //    if (!langMap.containsKey(locale))
+  //    {
+  //      locale = "en"; //$NON-NLS-1$
+  //    }
 
-//    pw.println("<div id='langSelect'>"); //$NON-NLS-1$
-//    pw.println(" <span>"); //$NON-NLS-1$
-//    printLocaleElement(pw, appRoot, locale, langMap.get(locale));
-//    pw.println(" </span>"); //$NON-NLS-1$
-//    pw.println(" <span class='flags ui-helper-hidden'>"); //$NON-NLS-1$
-//    for (Iterator li = langMap.keySet().iterator(); li.hasNext();)
-//    {
-//      // <img src="us.gif" alt="en" title="English"/>
-//      final Object l = li.next();
-//      if (!l.equals(locale))
-//      {
-//        printLocaleElement(pw, appRoot, l, langMap.get(l));
-//      }
-//    }
+  //    pw.println("<div id='langSelect'>"); //$NON-NLS-1$
+  //    pw.println(" <span>"); //$NON-NLS-1$
+  //    printLocaleElement(pw, appRoot, locale, langMap.get(locale));
+  //    pw.println(" </span>"); //$NON-NLS-1$
+  //    pw.println(" <span class='flags ui-helper-hidden'>"); //$NON-NLS-1$
+  //    for (Iterator li = langMap.keySet().iterator(); li.hasNext();)
+  //    {
+  //      // <img src="us.gif" alt="en" title="English"/>
+  //      final Object l = li.next();
+  //      if (!l.equals(locale))
+  //      {
+  //        printLocaleElement(pw, appRoot, l, langMap.get(l));
+  //      }
+  //    }
 
-//    pw.println(" </span>"); //$NON-NLS-1$
-//    pw.println("</div>"); //$NON-NLS-1$
-//  }
+  //    pw.println(" </span>"); //$NON-NLS-1$
+  //    pw.println("</div>"); //$NON-NLS-1$
+  //  }
 }
 
 void AbstractWebConsolePlugin::EndResponse(HttpServletRequest& request, std::ostream& os)

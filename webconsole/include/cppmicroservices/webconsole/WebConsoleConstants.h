@@ -106,8 +106,10 @@ struct US_WebConsole_EXPORT WebConsoleConstants
 
   /**
    * The name of the request attribute providing the absolute path of the
-   * Web Console root (value is "org.cppmicroservices.webconsole.appRoot"). This consists of
-   * the servlet context path (from <code>HttpServletRequest#GetContextPath()</code>)
+   * Web Console root (value is "org.cppmicroservices.webconsole.appRoot"). This
+   * consists of
+   * the servlet context path (from
+   * <code>HttpServletRequest#GetContextPath()</code>)
    * and the Web Console servlet path (from
    * <code>HttpServletRequest::GetServletPath()</code>,
    * <code>/us/console</code> by default).
@@ -118,8 +120,10 @@ struct US_WebConsole_EXPORT WebConsoleConstants
 
   /**
    * The name of the request attribute providing the absolute path of the
-   * current plugin (value is "org.cppmicroservices.webconsole.pluginRoot"). This consists of
-   * the servlet context path (from <code>HttpServletRequest::GetContextPath()</code>),
+   * current plugin (value is "org.cppmicroservices.webconsole.pluginRoot").
+   * This consists of
+   * the servlet context path (from
+   * <code>HttpServletRequest::GetContextPath()</code>),
    * the configured path of the web console root (<code>/us/console</code>
    * by default) and the plugin label #PLUGIN_LABEL.
    *
@@ -129,9 +133,11 @@ struct US_WebConsole_EXPORT WebConsoleConstants
 
   /**
    * The name of the request attribute providing a mapping of labels to page
-   * titles of registered console plugins (value is "org.cppmicroservices.webconsole.labelMap").
+   * titles of registered console plugins (value is
+   * "org.cppmicroservices.webconsole.labelMap").
    * This map may be used to render a navigation of the console plugins as the
-   * AbstractWebConsolePlugin#RenderTopNavigation(HttpServletRequest&, std::ostream&)
+   * AbstractWebConsolePlugin#RenderTopNavigation(HttpServletRequest&,
+   * std::ostream&)
    * method does.
    *
    * The type of this request attribute is <code>AnyMap</code>.
@@ -140,14 +146,14 @@ struct US_WebConsole_EXPORT WebConsoleConstants
 
   /**
    * The name of the request attribute holding the WebConsoleVariableResolver
-   * for the request (value is "org.cppmicroservices.webconsole.variable.resolver").
+   * for the request (value is
+   * "org.cppmicroservices.webconsole.variable.resolver").
    *
    * @see WebConsoleVariableResolver
    * @see AbstractWebConsolePlugin#GetVariableResolver
    * @see AbstractWebConsolePlugin#SetVariableResolver
    */
   static std::string ATTR_CONSOLE_VARIABLE_RESOLVER; // = "org.cppmicroservices.webconsole.variable.resolver"
-
 };
 
 }

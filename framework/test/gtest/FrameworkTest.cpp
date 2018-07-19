@@ -38,7 +38,7 @@ limitations under the License.
 #include "TestUtilBundleListener.h"
 
 using namespace cppmicroservices;
-using cppmicroservices::testing::GetTempDirectory;
+using cppmicroservices::util::GetTempDirectory;
 
 #if !defined(__clang__) && defined(__GNUC__)
 #define US_GCC_VER (__GNUC__ * 10000 \

@@ -54,12 +54,14 @@ public:
   static const int SC_OK = 200;
 
   /**
-   * Status code (201) indicating the request succeeded and created a new resource on the server.
+   * Status code (201) indicating the request succeeded and created a new
+   * resource on the server.
    */
   static const int SC_CREATED = 201;
 
   /**
-   * Status code (202) indicating that a request was accepted for processing, but was not completed.
+   * Status code (202) indicating that a request was accepted for processing,
+   * but was not completed.
    */
   static const int SC_ACCEPTED = 202;
 
@@ -89,7 +91,8 @@ public:
 
   /**
    * Status code (300) indicating that the requested resource corresponds
-   * to any one of a set of representations, each with its own specific location.
+   * to any one of a set of representations, each with its own specific
+   * location.
    */
   static const int SC_MULTIPLE_CHOICES = 300;
 
@@ -101,7 +104,8 @@ public:
   static const int SC_MOVED_PERMANENTLY = 301;
 
   /**
-   * Status code (302) indicating that the resource reside temporarily under a different URI.
+   * Status code (302) indicating that the resource reside temporarily under a
+   * different URI.
    */
   static const int SC_FOUND = 302;
 
@@ -131,13 +135,15 @@ public:
   static const int SC_USE_PROXY = 305;
 
   /**
-   * Status code (307) indicating that the requested resource resides temporarily
+   * Status code (307) indicating that the requested resource resides
+   * temporarily
    * under a different URI.
    */
   static const int SC_TEMPORARY_REDIRECT = 307;
 
   /**
-   * Status code (400) indicating the request sent by the client was syntactically incorrect.
+   * Status code (400) indicating the request sent by the client was
+   * syntactically incorrect.
    */
   static const int SC_BAD_REQUEST = 400;
 
@@ -152,7 +158,8 @@ public:
   static const int SC_PAYMENT_REQUIRED = 402;
 
   /**
-   * Status code (403) indicating the server understood the request but refused to fulfill it.
+   * Status code (403) indicating the server understood the request but refused
+   * to fulfill it.
    */
   static const int SC_FORBIDDEN = 403;
 
@@ -163,13 +170,15 @@ public:
 
   /**
    * Status code (405) indicating that the method specified in the
-   *  Request-Line is not allowed for the resource identified by the Request-URI.
+   *  Request-Line is not allowed for the resource identified by the
+   * Request-URI.
    */
   static const int SC_METHOD_NOT_ALLOWED = 405;
 
   /**
    * Status code (406) indicating that the resource identified by the request
-   * is only capable of generating response entities which have content characteristics
+   * is only capable of generating response entities which have content
+   * characteristics
    * not acceptable according to the accept headers sent in the request.
    */
   static const int SC_NOT_ACCEPTABLE = 406;
@@ -187,13 +196,15 @@ public:
   static const int SC_REQUEST_TIMEOUT = 408;
 
   /**
-   * Status code (409) indicating that the request could not be completed due to a conflict
+   * Status code (409) indicating that the request could not be completed due to
+   * a conflict
    * with the current state of the resource.
    */
   static const int SC_CONFLICT = 409;
 
   /**
-   * Status code (410) indicating that the resource is no longer available at the server
+   * Status code (410) indicating that the resource is no longer available at
+   * the server
    * and no forwarding address is known.
    */
   static const int SC_GONE = 410;
@@ -206,7 +217,8 @@ public:
 
   /**
    * Status code (412) indicating that the precondition given in one or more
-   * of the request-header fields evaluated to false when it was tested on the server.
+   * of the request-header fields evaluated to false when it was tested on the
+   * server.
    */
   static const int SC_PRECONDITION_FAILED = 412;
 
@@ -219,30 +231,36 @@ public:
 
   /**
    * Status code (414) indicating that the server is refusing to service the
-   *  request because the Request-URI is longer than the server is willing to interpret.
+   *  request because the Request-URI is longer than the server is willing to
+   * interpret.
    */
   static const int SC_REQUEST_URI_TOO_LONG = 414;
 
   /**
-   * Status code (415) indicating that the server is refusing to service the request
-   * because the entity of the request is in a format not supported by the requested
+   * Status code (415) indicating that the server is refusing to service the
+   * request
+   * because the entity of the request is in a format not supported by the
+   * requested
    * resource for the requested method.
    */
   static const int SC_UNSUPPORTED_MEDIA_TYPE = 415;
 
   /**
-   * Status code (416) indicating that the server cannot serve the requested byte range.
+   * Status code (416) indicating that the server cannot serve the requested
+   * byte range.
    */
   static const int SC_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
 
   /**
-   * Status code (417) indicating that the server could not meet the expectation given in
+   * Status code (417) indicating that the server could not meet the expectation
+   * given in
    * the Expect request header.
    */
   static const int SC_EXPECTATION_FAILED = 417;
 
   /**
-   * Status code (500) indicating an error inside the HTTP server which prevented it from
+   * Status code (500) indicating an error inside the HTTP server which
+   * prevented it from
    * fulfilling the request.
    */
   static const int SC_INTERNAL_SERVER_ERROR = 500;
@@ -254,25 +272,29 @@ public:
   static const int SC_NOT_IMPLEMENTED = 501;
 
   /**
-   *  Status code (502) indicating that the HTTP server received an invalid response
+   *  Status code (502) indicating that the HTTP server received an invalid
+   * response
    * from a server it consulted when acting as a proxy or gateway.
    */
   static const int SC_BAD_GATEWAY = 502;
 
   /**
-   * Status code (503) indicating that the HTTP server is temporarily overloaded,
+   * Status code (503) indicating that the HTTP server is temporarily
+   * overloaded,
    * and unable to handle the request.
    */
   static const int SC_SERVICE_UNAVAILABLE = 503;
 
   /**
-   * Status code (504) indicating that the server did not receive a timely response from
+   * Status code (504) indicating that the server did not receive a timely
+   * response from
    * the upstream server while acting as a gateway or proxy.
    */
   static const int SC_GATEWAY_TIMEOUT = 504;
 
   /**
-   * Status code (505) indicating that the server does not support or refuses to support
+   * Status code (505) indicating that the server does not support or refuses to
+   * support
    * the HTTP protocol version that was used in the request message.
    */
   static const int SC_HTTP_VERSION_NOT_SUPPORTED = 505;

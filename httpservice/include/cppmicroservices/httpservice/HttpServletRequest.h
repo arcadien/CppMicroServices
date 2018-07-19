@@ -34,6 +34,8 @@ namespace cppmicroservices {
 
 class ServletContext;
 struct HttpServletRequestPrivate;
+struct HttpServletPartPrivate;
+class HttpServletPart;
 
 class US_HttpService_EXPORT HttpServletRequest
 {
@@ -98,12 +100,55 @@ public:
 
   void SetAttribute(const std::string& name, const Any& value);
 
+  /*!
+   * Return the value of asked query parameter or empty Any if the parameter is
+   * not found
+   */
+  Any GetParameter(const std::string& name) const;
+
+  /*!
+   *
+   * Gets all the Part components of this request, provided that it is of type
+   * multipart/form-data.
+   */
+  std::vector<HttpServletPart*> GetParts() const;
+
+  /*!
+   * Gets the Part with the given name.
+   */
+  HttpServletPart* GetPart(const std::string& name) const;
+
+  /*!
+   * Triggers the load of files transmitted by HTTP POST, multipart/form-data
+   * encoded
+   *
+   * An optional callback can be used to perform special operation on the
+   * ServletPart
+   */
+  void ReadParts(void* callback(HttpServletPart*) = 0);
+
+  HttpServletRequest(HttpServletRequestPrivate* d);
+
 private:
 
   friend class ServletHandler;
-  HttpServletRequest(HttpServletRequestPrivate* d);
 
   ExplicitlySharedDataPointer<HttpServletRequestPrivate> d;
+
+  // CiveWeb callbacks used when calling ReadParts()
+
+  static int field_found(const char* key,
+                         const char* filename,
+                         char* path,
+                         size_t pathlen,
+                         void* user_data);
+  static int field_store(const char* path,
+                         long long file_size,
+                         void* user_data);
+  static int field_get(const char* key,
+                       const char* value,
+                       size_t valuelen,
+                       void* user_data);
 };
 
 }

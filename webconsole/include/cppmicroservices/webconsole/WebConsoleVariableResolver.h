@@ -33,7 +33,8 @@
 namespace cppmicroservices {
 
 /**
- * The <code>WebConsoleVariableResolver</code> interface defines the API for an object
+ * The <code>WebConsoleVariableResolver</code> interface defines the API for an
+ * object
  * which may be provided by plugins to provide replacement values for
  * variables in the generated content.
  *
@@ -49,7 +50,8 @@ namespace cppmicroservices {
  *
  *    The variable resolver must be set in the request *before*
  *    the response stream is retrieved calling the
- *    :any:`HttpServletResponse::GetOutputStream <cppmicroservices::HttpServletResponse::GetOutputStream>`
+ *    :any:`HttpServletResponse::GetOutputStream
+ * <cppmicroservices::HttpServletResponse::GetOutputStream>`
  *    method. Otherwise the variable resolver will not be used for
  *    resolving variables.
  * \endrststar

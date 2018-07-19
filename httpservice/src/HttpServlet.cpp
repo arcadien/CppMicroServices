@@ -109,7 +109,7 @@ public:
 private:
 
   NoBodyOutputStreamBuffer* m_NoBodyBuffer;
-  //bool m_DidSetContentLength;
+  // bool m_DidSetContentLength;
 };
 
 static const std::string METHOD_DELETE = "DELETE";

@@ -24,11 +24,13 @@
 #define CPPMICROSERVICES_HTTPSERVLETREQUESTPRIVATE_H
 
 #include "cppmicroservices/SharedData.h"
+#include "cppmicroservices/httpservice/HttpServletPart.h"
 
 #include <string>
 #include <map>
 #include <memory>
 
+#include "HttpServletPartPrivate.h"
 class CivetServer;
 struct mg_connection;
 
@@ -36,10 +38,13 @@ namespace cppmicroservices {
 
 class Any;
 class ServletContext;
+class HttpServletPart;
 
 struct HttpServletRequestPrivate : public SharedData
 {
   HttpServletRequestPrivate(const std::shared_ptr<ServletContext>& servletContext, CivetServer* server, mg_connection* conn);
+
+  ~HttpServletRequestPrivate();
 
   const std::shared_ptr<ServletContext> m_ServletContext;
   CivetServer* const m_Server;
@@ -55,8 +60,25 @@ struct HttpServletRequestPrivate : public SharedData
   std::string m_QueryString;
   std::string m_Url;
 
+  std::string m_TempDirname;
+
+  typedef std::map<std::string, HttpServletPart*> PartsMapType;
+  PartsMapType m_PartsMap;
+
   typedef std::map<std::string, Any> AttributeMapType;
   AttributeMapType m_Attributes;
+
+  typedef std::map<std::string, std::string> ParameterMapType;
+  ParameterMapType m_Parameters;
+
+  /*!
+   * Splits a query string (using & separator) and assign each key/value in the
+   * request
+   * attributes.
+   *
+   * Note: string is considered to be sanitized
+   */
+  void ExtractAttributesFromQueryString(const std::string& queryString);
 };
 
 }

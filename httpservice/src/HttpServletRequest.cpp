@@ -22,14 +22,24 @@
 
 #include "cppmicroservices/httpservice/HttpServletRequest.h"
 #include "HttpServletRequestPrivate.h"
+#include "cppmicroservices/util/FileSystem.h"
 
+#include "FileHttpServletPartPrivate.h"
+#include "MemoryHttpServletPartPrivate.h"
+
+#include "HttpServletPartPrivate.h"
+#include "cppmicroservices/httpservice/HttpServletPart.h"
 #include "cppmicroservices/httpservice/ServletContext.h"
 
 #include "civetweb/civetweb.h"
 
 #include <cassert>
-#include <ctime>
 #include <cstring>
+
+#include <iostream>
+#include <regex>
+#include <stdexcept>
+#include <stdlib.h>
 
 #ifdef US_PLATFORM_WINDOWS
 #define timegm(x) (_mkgmtime(x))
@@ -44,6 +54,7 @@ HttpServletRequestPrivate::HttpServletRequestPrivate(const std::shared_ptr<Servl
   , m_Connection(conn)
   , m_Scheme("http")
   , m_ServerPort("80")
+  , m_PartsMap()
 {
   std::string host = mg_get_header(m_Connection, "Host");
 
@@ -82,23 +93,31 @@ HttpServletRequestPrivate::HttpServletRequestPrivate(const std::shared_ptr<Servl
   }
 
   // get the uri
-  std::string uri = mg_get_request_info(m_Connection)->request_uri;
+  const mg_request_info* requInfo = mg_get_request_info(m_Connection);
+  std::string uri = requInfo->request_uri;
   pos = uri.find_first_of('?');
   m_Uri = uri.substr(0, pos);
 
-  // get the query string
-  if (pos != std::string::npos)
-  {
-    m_QueryString = m_Uri.substr(pos);
+  // store the query string if it exists
+  m_QueryString =
+    (nullptr != requInfo->query_string) ? requInfo->query_string : "";
+
+  if (m_QueryString.length() > 0) {
+    ExtractAttributesFromQueryString(m_QueryString);
   }
 
   // reconstruct the url
   m_Url = m_Scheme + "://" + m_ServerName + ":" + m_ServerPort + m_Uri;
 }
 
-HttpServletRequest::~HttpServletRequest()
+HttpServletRequestPrivate::~HttpServletRequestPrivate()
 {
+  for (auto partMapElement : m_PartsMap) {
+    delete partMapElement.second;
+  }
 }
+
+HttpServletRequest::~HttpServletRequest() {}
 HttpServletRequest::HttpServletRequest(const HttpServletRequest& o)
   : d(o.d)
 {
@@ -108,6 +127,42 @@ HttpServletRequest& HttpServletRequest::operator=(const HttpServletRequest& o)
 {
   d = o.d;
   return *this;
+}
+
+void HttpServletRequestPrivate::ExtractAttributesFromQueryString(
+  const std::string& queryString)
+{
+
+  static const std::regex re1("&");
+  static const std::regex re2("=");
+  std::sregex_token_iterator first{
+    queryString.begin(), queryString.end(), re1, -1
+  },
+    last;
+  std::vector<std::string> parameters({ first, last });
+  char decoded[1024];
+  if (parameters.size() > 1) {
+    for (std::string parameter : parameters) {
+      std::sregex_token_iterator first{
+        parameter.begin(), parameter.end(), re2, -1
+      },
+        last;
+      std::vector<std::string> keyVal({ first, last });
+      const int srcLen = static_cast<int>(keyVal[1].length()) + 1;
+      mg_url_decode(keyVal[1].c_str(), srcLen, decoded, srcLen, 0);
+      m_Parameters[keyVal[0]] = std::string(decoded);
+    }
+  }
+}
+
+Any HttpServletRequest::GetParameter(const std::string& name) const
+{
+  HttpServletRequestPrivate::ParameterMapType::const_iterator iter =
+    d->m_Parameters.find(name);
+  if (iter == d->m_Parameters.end()) {
+    return Any();
+  }
+  return Any(iter->second);
 }
 
 std::shared_ptr<ServletContext> HttpServletRequest::GetServletContext() const
@@ -333,9 +388,183 @@ void HttpServletRequest::SetAttribute(const std::string& name, const Any& value)
   d->m_Attributes[name] = value;
 }
 
-HttpServletRequest::HttpServletRequest(HttpServletRequestPrivate* d)
- : d(d)
+struct UserData
 {
+  HttpServletPartPrivate* PrivatePart;
+  void* Callback;
+  HttpServletRequest* request;
+
+  UserData()
+    : PrivatePart(nullptr)
+    , Callback(nullptr)
+    , request(nullptr)
+  {}
+};
+
+int HttpServletRequest::field_found(const char* key,
+                                    const char* filename,
+                                    char* path,
+                                    size_t /* pathlen */,
+                                    void* user_data)
+{
+  int resultCode = -1;
+  HttpServletPartPrivate* privatePart;
+
+  UserData* user_data_parsed = static_cast<UserData*>(user_data);
+  HttpServletRequest* request = user_data_parsed->request;
+
+  if (filename != nullptr && strlen(filename) > 0) {
+    // this is a file upload
+    FileHttpServletPartPrivate* filePrivatePart;
+    filePrivatePart =
+      new FileHttpServletPartPrivate(request->d->m_ServletContext,
+                                     request->d->m_Server,
+                                     request->d->m_Connection);
+    util::File file = util::MakeUniqueTempFile(request->d->m_TempDirname);
+    filePrivatePart->m_TemporaryFileName = file.Path;
+
+    filePrivatePart->m_SubmittedFileName = std::string(filename);
+    strncpy(path,
+            filePrivatePart->m_TemporaryFileName.c_str(),
+            filePrivatePart->m_TemporaryFileName.size());
+
+    privatePart = filePrivatePart;
+    resultCode = MG_FORM_FIELD_STORAGE_STORE;
+  } else {
+    // This is a simple HTTP form parameter
+    MemoryHttpServletPartPrivate* memoryPrivatePart;
+    memoryPrivatePart =
+      new MemoryHttpServletPartPrivate(request->d->m_ServletContext,
+                                       request->d->m_Server,
+                                       request->d->m_Connection);
+
+    privatePart = memoryPrivatePart;
+    resultCode = MG_FORM_FIELD_STORAGE_GET;
+  }
+  privatePart->m_Name = std::string(key);
+  user_data_parsed->PrivatePart = privatePart;
+
+  return resultCode;
 }
 
+int HttpServletRequest::field_get(const char* key,
+                                  const char* value,
+                                  size_t valuelen,
+                                  void* user_data)
+{
+  if (strlen(key) == 0) {
+    return 0;
+  }
+  UserData* user_data_parsed = static_cast<UserData*>(user_data);
+  HttpServletRequest* request = user_data_parsed->request;
+  request->d->m_Parameters[key] = std::string(value).substr(0, valuelen);
+
+  MemoryHttpServletPartPrivate* privatePart;
+  privatePart =
+    dynamic_cast<MemoryHttpServletPartPrivate*>(user_data_parsed->PrivatePart);
+  if (nullptr != privatePart) {
+    privatePart->m_Value = std::string(value).substr(0, valuelen);
+    HttpServletPart* part = new HttpServletPart(privatePart);
+
+#ifdef _MSC_VER
+    void (*callback)(HttpServletPart*) =
+      static_cast<void (*)(HttpServletPart*)>(user_data_parsed->Callback);
+#else
+    void (*callback)(HttpServletPart*) =
+      reinterpret_cast<decltype(callback)>(user_data_parsed->Callback);
+#endif
+
+    HttpServletRequest* httpRequest;
+    httpRequest = static_cast<HttpServletRequest*>(user_data_parsed->request);
+    httpRequest->d->m_PartsMap.insert(
+      std::pair<std::string, HttpServletPart*>(privatePart->m_Name, part));
+
+    if (callback != NULL) {
+      callback(part);
+    }
+  }
+  return 0;
+}
+
+int HttpServletRequest::field_store(const char* path,
+                                    long long file_size,
+                                    void* user_data)
+{
+  UserData* user_data_parsed = static_cast<UserData*>(user_data);
+
+  FileHttpServletPartPrivate* privatePart;
+  privatePart =
+    dynamic_cast<FileHttpServletPartPrivate*>(user_data_parsed->PrivatePart);
+  if (nullptr != privatePart) {
+    HttpServletPart* part = new HttpServletPart(privatePart);
+
+    privatePart->m_TemporaryFileName = std::string(path);
+    privatePart->m_Size = file_size;
+
+#ifdef _MSC_VER
+    void (*callback)(HttpServletPart*) =
+      static_cast<void (*)(HttpServletPart*)>(user_data_parsed->Callback);
+#else
+    void (*callback)(HttpServletPart*) =
+      reinterpret_cast<decltype(callback)>(user_data_parsed->Callback);
+#endif
+
+    HttpServletRequest* httpRequest;
+    httpRequest = static_cast<HttpServletRequest*>(user_data_parsed->request);
+    httpRequest->d->m_PartsMap.insert(
+      std::pair<std::string, HttpServletPart*>(privatePart->m_Name, part));
+
+    if (callback != NULL) {
+      callback(part);
+    }
+  }
+  return 0;
+}
+
+void HttpServletRequest::ReadParts(void* callback(HttpServletPart*))
+{
+  UserData user_data;
+  user_data.PrivatePart = nullptr;
+  user_data.Callback = reinterpret_cast<decltype(user_data.Callback)>(callback);
+  user_data.request = this;
+
+  mg_form_data_handler fdh = {
+    HttpServletRequest::field_found,
+    HttpServletRequest::field_get,
+    HttpServletRequest::field_store,
+    &user_data,
+  };
+
+  mg_handle_form_request(d->m_Connection, &fdh);
+}
+
+HttpServletRequest::HttpServletRequest(HttpServletRequestPrivate* d)
+  : d(d)
+{}
+
+std::vector<HttpServletPart*> HttpServletRequest::GetParts() const
+{
+  std::vector<HttpServletPart*> v;
+  for (std::map<std::string, HttpServletPart*>::iterator it =
+         d->m_PartsMap.begin();
+       it != d->m_PartsMap.end();
+       ++it) {
+    v.push_back(it->second);
+  }
+  return v;
+}
+
+HttpServletPart* HttpServletRequest::GetPart(const std::string& name) const
+{
+  HttpServletPart* result = nullptr;
+  std::map<std::string, HttpServletPart*>::iterator it;
+  it = d->m_PartsMap.find(name);
+  bool found = (it != d->m_PartsMap.end());
+  if (found) {
+    result = it->second;
+  } else {
+    throw std::runtime_error("Cannot found part named '" + name + "'");
+  }
+  return result;
+}
 }

@@ -1200,8 +1200,8 @@ int ResourceCompilerTest(int /*argc*/, char* /*argv*/[])
     US_TEST_FAILED_MSG(<< "Cannot find usResourceCompiler executable:" << rcbinpath);
   }
 
-  testing::TempDir uniqueTempdir = testing::MakeUniqueTempDirectory();
-  auto tempdir = uniqueTempdir.Path + DIR_SEP;
+  std::string uniqueTempdir = util::MakeUniqueTempDirectory();
+  auto tempdir = uniqueTempdir + DIR_SEP;
 #ifndef US_PLATFORM_WINDOWS
   escapePath(tempdir);
   escapePath(rcbinpath);

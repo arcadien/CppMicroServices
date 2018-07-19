@@ -54,32 +54,40 @@ private:
   /**
    * Write a single character following the state machine:
    *
-   * State                       | Character | Task                                   | Next State
+   * State                       | Character | Task | Next State
    * ------------------------------------------------------------------------------------------------------------
-   * NIL                         | {         |                                        | OBRACE
-   * NIL                         | any       | write c                                | NIL
-   * OBRACE                      | {         | buffer {{                              | MUSTACHE
-   * OBRACE                      | any       | write { and c                          | NIL
-   * MUSTACHE                    | # or ^    | buffer c                               | MUSTACHE_BLOCK_BEGIN
-   * MUSTACHE                    | any       | buffer c                               | MUSTACHE_VAR
-   * MUSTACHE_VAR                | }         | buffer c                               | MUSTACHE_VAR_CBRACE
-   * MUSTACHE_VAR                | any       | buffer c                               | MUSTACHE_VAR
-   * MUSTACHE_VAR_CBRACE         | }         | buffer c, render buffer                | NIL
-   * MUSTACHE_VAR_CBRACE         | any       | buffer c                               | MUSTACHE_VAR
-   * MUSTACHE_BLOCK_BEGIN        | }         | buffer c                               | MUSTACHE_BLOCK_BEGIN_CBRACE
-   * MUSTACHE_BLOCK_BEGIN        | any       | buffer c, btag c                       | MUSTACHE_BLOCK_BEGIN
-   * MUSTACHE_BLOCK_BEGIN_CBRACE | }         | buffer c                               | MUSTACHE_BLOCK
-   * MUSTACHE_BLOCK_BEGIN_CBRACE | any       | buffer c, btag } and c                 | MUSTACHE_BLOCK_BEGIN
-   * MUSTACHE_BLOCK              | {         | buffer c                               | MUSTACHE_BLOCK_OBRACE
-   * MUSTACHE_BLOCK              | any       | buffer c                               | MUSTACHE_BLOCK
-   * MUSTACHE_BLOCK_OBRACE       | {         | buffer c                               | MUSTACHE_BLOCK_MUSTACHE
-   * MUSTACHE_BLOCK_OBRACE       | any       | buffer c                               | MUSTACHE_BLOCK
-   * MUSTACHE_BLOCK_MUSTACHE     | /         | buffer c                               | MUSTACHE_BLOCK_END
-   * MUSTACHE_BLOCK_MUSTACHE     | any       | buffer c                               | MUSTACHE BLOCK
-   * MUSTACHE_BLOCK_END          | }         | buffer c                               | MUSTACHE_BLOCK_END_CBRACE
-   * MUSTACHE_BLOCK_END          | any       | buffer c, etag c                       | MUSTACHE_BLOCK_END
-   * MUSTACHE_BLOCK_END_CBRACE   | }         | buffer c, if tags match render buffer  | if match NIL else MUSTACHE_BLOCK
-   * MUSTACHE_BLOCK_END_CBRACE   | any       | buffer c, etag } and c                 | MUSTACHE_BLOCK END
+   * NIL                         | {         | | OBRACE
+   * NIL                         | any       | write c | NIL
+   * OBRACE                      | {         | buffer {{ | MUSTACHE
+   * OBRACE                      | any       | write { and c | NIL
+   * MUSTACHE                    | # or ^    | buffer c | MUSTACHE_BLOCK_BEGIN
+   * MUSTACHE                    | any       | buffer c | MUSTACHE_VAR
+   * MUSTACHE_VAR                | }         | buffer c | MUSTACHE_VAR_CBRACE
+   * MUSTACHE_VAR                | any       | buffer c | MUSTACHE_VAR
+   * MUSTACHE_VAR_CBRACE         | }         | buffer c, render buffer | NIL
+   * MUSTACHE_VAR_CBRACE         | any       | buffer c | MUSTACHE_VAR
+   * MUSTACHE_BLOCK_BEGIN        | }         | buffer c
+   * | MUSTACHE_BLOCK_BEGIN_CBRACE
+   * MUSTACHE_BLOCK_BEGIN        | any       | buffer c, btag c
+   * | MUSTACHE_BLOCK_BEGIN
+   * MUSTACHE_BLOCK_BEGIN_CBRACE | }         | buffer c | MUSTACHE_BLOCK
+   * MUSTACHE_BLOCK_BEGIN_CBRACE | any       | buffer c, btag } and c
+   * | MUSTACHE_BLOCK_BEGIN
+   * MUSTACHE_BLOCK              | {         | buffer c | MUSTACHE_BLOCK_OBRACE
+   * MUSTACHE_BLOCK              | any       | buffer c | MUSTACHE_BLOCK
+   * MUSTACHE_BLOCK_OBRACE       | {         | buffer c
+   * | MUSTACHE_BLOCK_MUSTACHE
+   * MUSTACHE_BLOCK_OBRACE       | any       | buffer c | MUSTACHE_BLOCK
+   * MUSTACHE_BLOCK_MUSTACHE     | /         | buffer c | MUSTACHE_BLOCK_END
+   * MUSTACHE_BLOCK_MUSTACHE     | any       | buffer c | MUSTACHE BLOCK
+   * MUSTACHE_BLOCK_END          | }         | buffer c
+   * | MUSTACHE_BLOCK_END_CBRACE
+   * MUSTACHE_BLOCK_END          | any       | buffer c, etag c
+   * | MUSTACHE_BLOCK_END
+   * MUSTACHE_BLOCK_END_CBRACE   | }         | buffer c, if tags match render
+   * buffer  | if match NIL else MUSTACHE_BLOCK
+   * MUSTACHE_BLOCK_END_CBRACE   | any       | buffer c, etag } and c
+   * | MUSTACHE_BLOCK END
    *
    * @exception IOException If an I/O error occurs
    */

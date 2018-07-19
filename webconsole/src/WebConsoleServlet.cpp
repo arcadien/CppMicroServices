@@ -74,7 +74,7 @@ private:
     }
   }
 
-  //std::ostream* m_Stream;
+  // std::ostream* m_Stream;
   std::streambuf* m_StreamBuf;
   AbstractWebConsolePlugin* m_Plugin;
   HttpServletRequest& m_Request;
@@ -179,20 +179,20 @@ void WebConsoleServlet::Init(const ServletConfig& config)
 
 void WebConsoleServlet::Service(HttpServletRequest& request, HttpServletResponse& response)
 {
-  //std::cout << "RequestUrl: " << request.GetRequestUrl() << std::endl;
-  //std::cout << "RequestUri: " << request.GetRequestUri() << std::endl;
-  //std::cout << "ContextPath: " << request.GetContextPath() << std::endl;
-  //std::cout << "PathInfo: " << request.GetPathInfo() << std::endl;
-  //std::cout << "ServletPath: " << request.GetServletPath() << std::endl;
-  //std::cout << "LocalName: " << request.GetLocalName() << std::endl;
-  //std::cout << "LocalPort: " << request.GetLocalPort() << std::endl;
-  //std::cout << "Protocol: " << request.GetProtocol() << std::endl;
-  //std::cout << "Scheme: " << request.GetScheme() << std::endl;
-  //std::cout << "RemoteAddr: " << request.GetRemoteAddr() << std::endl;
-  //std::cout << "RemoteHost: " << request.GetRemoteHost() << std::endl;
-  //std::cout << "RemotePort: " << request.GetRemotePort() << std::endl;
-  //std::cout << "ServerName: " << request.GetServerName() << std::endl;
-  //std::cout << "ServerPort: " << request.GetServerPort() << std::endl;
+  // std::cout << "RequestUrl: " << request.GetRequestUrl() << std::endl;
+  // std::cout << "RequestUri: " << request.GetRequestUri() << std::endl;
+  // std::cout << "ContextPath: " << request.GetContextPath() << std::endl;
+  // std::cout << "PathInfo: " << request.GetPathInfo() << std::endl;
+  // std::cout << "ServletPath: " << request.GetServletPath() << std::endl;
+  // std::cout << "LocalName: " << request.GetLocalName() << std::endl;
+  // std::cout << "LocalPort: " << request.GetLocalPort() << std::endl;
+  // std::cout << "Protocol: " << request.GetProtocol() << std::endl;
+  // std::cout << "Scheme: " << request.GetScheme() << std::endl;
+  // std::cout << "RemoteAddr: " << request.GetRemoteAddr() << std::endl;
+  // std::cout << "RemoteHost: " << request.GetRemoteHost() << std::endl;
+  // std::cout << "RemotePort: " << request.GetRemotePort() << std::endl;
+  // std::cout << "ServerName: " << request.GetServerName() << std::endl;
+  // std::cout << "ServerPort: " << request.GetServerPort() << std::endl;
 
   // check whether we are not at .../{webManagerRoot}
   std::string pathInfo = request.GetPathInfo();
@@ -224,22 +224,25 @@ void WebConsoleServlet::Service(HttpServletRequest& request, HttpServletResponse
   }
 
   AbstractWebConsolePlugin* plugin = GetConsolePlugin(label);
-  if (plugin != nullptr)
-  {
-    //final Map labelMap = holder.getLocalizedLabelMap( resourceBundleManager, locale, this.defaultCategory );
-    //final Object flatLabelMap = labelMap.remove( WebConsoleConstants.ATTR_LABEL_MAP );
+  if (plugin != nullptr) {
+    // final Map labelMap = holder.getLocalizedLabelMap( resourceBundleManager,
+    // locale, this.defaultCategory );
+    // final Object flatLabelMap = labelMap.remove(
+    // WebConsoleConstants.ATTR_LABEL_MAP );
 
     // the official request attributes
-    //request.SetAttribute(WebConsoleConstants::ATTR_LANG_MAP, getLangMap());
-    request.SetAttribute(WebConsoleConstants::ATTR_LABEL_MAP, m_PluginTracker.GetLabelMap(label));
-    //request.SetAttribute(WebConsoleConstants::ATTR_LABEL_MAP_CATEGORIZED, labelMap );
+    // request.SetAttribute(WebConsoleConstants::ATTR_LANG_MAP, getLangMap());
+    request.SetAttribute(WebConsoleConstants::ATTR_LABEL_MAP,
+                         m_PluginTracker.GetLabelMap(label));
+    // request.SetAttribute(WebConsoleConstants::ATTR_LABEL_MAP_CATEGORIZED,
+    // labelMap );
     request.SetAttribute(WebConsoleConstants::ATTR_APP_ROOT,
                          request.GetContextPath() + request.GetServletPath());
     request.SetAttribute(WebConsoleConstants::ATTR_PLUGIN_ROOT,
                          request.GetContextPath() + request.GetServletPath() + '/' + label);
 
     // wrap the response for localization and template variable replacement
-    //request = wrapRequest(request, locale);
+    // request = wrapRequest(request, locale);
     FilteringResponseWrapper filteringResponse(request, response, plugin);
 
     plugin->Service(request, filteringResponse);
