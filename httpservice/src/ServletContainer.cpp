@@ -138,8 +138,6 @@ ServletContainerPrivate::ServletContainerPrivate(BundleContext bundleCtx, Servle
 
 void ServletContainerPrivate::Start()
 {
-  int port = 0;
-  int sslPort = 0;
   {
     Lock l(m_Mutex); US_UNUSED(l);
     if (m_Server) return;
@@ -152,10 +150,14 @@ void ServletContainerPrivate::Start()
       m_Server.reset();
       return;
     }
-    mg_get_ports(serverContext, 1, &port, &sslPort);
-  }
 
-  std::cout << "Servlet Container listening on http://localhost:" << port << std::endl;
+    std::vector<int> listenedPorts = m_Server->getListeningPorts();
+    for (size_t portIndex = 0; portIndex < listenedPorts.size(); ++portIndex)
+    {
+      std::cout << "Servlet Container listening on http://localhost:" << listenedPorts.at(portIndex) << std::endl;
+    }
+
+  }
   m_ServletTracker.Open();
 }
 
