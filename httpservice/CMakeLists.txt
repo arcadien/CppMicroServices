@@ -8,6 +8,7 @@ set(_srcs
   src/ServletContext.cpp
   src/HttpOutputStreamBuffer.cpp
   src/HttpServletRequest.cpp
+  src/HttpServletPart.cpp
   src/HttpServletResponse.cpp
   src/ServletConfig.cpp
 )
@@ -28,9 +29,12 @@ set(_private_headers
   src/HttpOutputStreamBuffer.h
   src/HttpServletPrivate.h
   src/HttpServletRequestPrivate.h
+  src/HttpServletPartPrivate.h
   src/HttpServletResponsePrivate.h
   src/ServletConfigPrivate.h
   src/ServletContainerPrivate.h
+  src/MemoryHttpServletPartPrivate.h
+  src/FileHttpServletPartPrivate.h
 )
 
 set(_public_headers
@@ -38,18 +42,27 @@ set(_public_headers
   include/cppmicroservices/httpservice/HttpServlet.h
   include/cppmicroservices/httpservice/ServletContext.h
   include/cppmicroservices/httpservice/HttpServletRequest.h
+  include/cppmicroservices/httpservice/HttpServletPart.h
   include/cppmicroservices/httpservice/HttpServletResponse.h
   include/cppmicroservices/httpservice/ServletConfig.h
   include/cppmicroservices/httpservice/ServletContainer.h
 )
 
-set(compile_definitions USE_WEBSOCKET)
+
 if(WIN32)
   list(APPEND compile_definitions WIN32)
 elseif(LINUX)
   list(APPEND compile_definitions LINUX)
 elseif(APPLE)
   list(APPEND compile_definitions DARWIN)
+endif()
+
+if(US_ENABLE_WEBSOCKET_SUPPORT)
+    message("-- Activate WebSocket support for CivetWeb webserver")
+    # add_definitions(USE_WEBSOCKET)
+    # set(compile_definitions USE_WEBSOCKET)
+    list(APPEND compile_definitions USE_WEBSOCKET)
+
 endif()
 
 set_property(SOURCE src/civetweb/civetweb.c src/civetweb/CivetServer.cpp
@@ -84,4 +97,3 @@ endif()
 if(UNIX AND NOT APPLE)
   target_link_libraries(usHttpService PRIVATE rt)
 endif()
-

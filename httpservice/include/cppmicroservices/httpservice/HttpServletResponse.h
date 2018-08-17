@@ -36,6 +36,13 @@ struct HttpServletResponsePrivate;
 class US_HttpService_EXPORT HttpServletResponse
 {
 public:
+  /*!
+  * For now I have no idea on how to test
+  * HttpServletResponse without this method: mocking the whole CivetWeb
+  * without interface is out of scope
+  */
+  static HttpServletResponse* Create();
+
   /**
    * Status code (100) indicating the client can continue.
    */
@@ -281,56 +288,57 @@ public:
   HttpServletResponse(const HttpServletResponse& o);
   HttpServletResponse& operator=(const HttpServletResponse& o);
 
-  void FlushBuffer();
+  virtual void FlushBuffer();
 
-  bool IsCommitted() const;
+  virtual bool IsCommitted() const;
 
-  std::size_t GetBufferSize() const;
+  virtual std::size_t GetBufferSize() const;
 
-  std::string GetCharacterEncoding() const;
+  virtual std::string GetCharacterEncoding() const;
 
-  std::string GetContentType() const;
+  virtual std::string GetContentType() const;
 
-  std::ostream& GetOutputStream();
+  virtual std::ostream& GetOutputStream();
 
-  void Reset();
+  virtual void Reset();
 
-  void ResetBuffer();
+  virtual void ResetBuffer();
 
-  void SetBufferSize(std::size_t size);
+  virtual void SetBufferSize(std::size_t size);
 
-  void SetCharacterEncoding(const std::string& charset);
+  virtual void SetCharacterEncoding(const std::string& charset);
 
-  void SetContentLength(std::size_t size);
+  virtual void SetContentLength(std::size_t size);
 
-  void SetContentType(const std::string& type);
+  virtual void SetContentType(const std::string& type);
 
-  void AddHeader(const std::string& name, const std::string& value);
+  virtual void AddHeader(const std::string& name, const std::string& value);
 
-  void SetHeader(const std::string& name, const std::string& value);
+  virtual void SetHeader(const std::string& name, const std::string& value);
 
-  void SetDateHeader(const std::string& name, long long date);
+  virtual void SetDateHeader(const std::string& name, long long date);
 
-  void AddIntHeader(const std::string& name, int value);
+  virtual void AddIntHeader(const std::string& name, int value);
 
-  void SetIntHeader(const std::string& name, int value);
+  virtual void SetIntHeader(const std::string& name, int value);
 
-  bool ContainsHeader(const std::string& name) const;
+  virtual bool ContainsHeader(const std::string& name) const;
 
-  std::string GetHeader(const std::string& name) const;
+  virtual std::string GetHeader(const std::string& name) const;
 
-  int GetStatus() const;
+  virtual int GetStatus() const;
 
-  void SetStatus(int statusCode);
+  virtual void SetStatus(int statusCode);
 
-  void SendError(int statusCode, const std::string& msg = std::string());
+  virtual void SendError(int statusCode,
+                         const std::string& msg = std::string());
 
-  void SendRedirect(const std::string& location);
+  virtual void SendRedirect(const std::string& location);
 
 protected:
   virtual std::streambuf* GetOutputStreamBuffer();
 
-  void SetOutputStreamBuffer(std::streambuf* sb);
+  virtual void SetOutputStreamBuffer(std::streambuf* sb);
 
   HttpServletResponse(HttpServletResponsePrivate* d);
 
