@@ -54,6 +54,7 @@ void FileHttpServletPartPrivate::Delete()
   const char* filename = m_TemporaryFileName.c_str();
   std::ifstream f(filename);
   if (f.good()) {
+    f.close();
     int status = remove(filename);
     if (status != 0) {
       std::cerr << "Temporary file '" << m_TemporaryFileName
